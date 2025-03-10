@@ -85,6 +85,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            loadMessages();
             document.querySelectorAll(".message").forEach(textarea => {
                 autoResize(textarea);
             });
@@ -150,6 +151,8 @@
             inputField.value = "";
             nameField.value = "";
             toggleMessageInput();
+
+            saveMessage(nameText, messageText);
         }
 
         function getColumnHeight(column) {
@@ -158,6 +161,46 @@
                 height += message.offsetHeight + 10;
             });
             return height;
+        }
+
+        function saveMessage(name, message) {
+            let messages = JSON.parse(localStorage.getItem('savedMessages')) || [];
+            messages.push({ name, message });
+            localStorage.setItem('savedMessages', JSON.stringify(messages));
+            loadMessages();
+        }
+
+        function loadMessages() {
+            let messages = JSON.parse(localStorage.getItem('savedMessages')) || [];
+            const columns = document.querySelectorAll('.column');
+            columns.forEach(column => column.innerHTML = '');
+
+            messages.forEach(msg => {
+                const newMessageContainer = document.createElement('div');
+                const nameElement = document.createElement('span');
+                nameElement.classList.add('name');
+                nameElement.textContent = `- ${msg.name}`;
+                const newMessage = document.createElement('textarea');
+                newMessage.classList.add('message');
+                newMessage.setAttribute('oninput', 'autoResize(this)');
+                newMessage.readOnly = true;
+                newMessage.value = msg.message;
+                newMessageContainer.appendChild(nameElement);
+                newMessageContainer.appendChild(newMessage);
+                
+                let minHeightColumn = columns[0];
+                let minHeight = Infinity;
+                columns.forEach(col => {
+                    const height = getColumnHeight(col);
+                    if (height < minHeight) {
+                        minHeight = height;
+                        minHeightColumn = col;
+                    }
+                });
+                
+                minHeightColumn.appendChild(newMessageContainer);
+                autoResize(newMessage);
+            });
         }
     </script>
 </head>
