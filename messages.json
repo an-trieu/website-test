@@ -6,30 +6,37 @@
   },
   {
     "name": "Bob",
-    "message": "Hope your day is filled with love, laughter, and all the good things in life."
+    "message": "Hope your day is filled with love, laughter, and all the good things in life.",
+    "image": null
   },
   {
     "name": "Charlie",
-    "message": "May your special day be filled with happiness!"
+    "message": "May your special day be filled with happiness!",
+    "image": null
   },
   {
     "name": "Dave",
-    "message": "Stay happy, stay blessed, and enjoy every moment!"
+    "message": "Stay happy, stay blessed, and enjoy every moment!",
+    "image": null
   },
   {
     "name": "Emma",
-    "message": "May your birthday be as awesome as you are!"
+    "message": "May your birthday be as awesome as you are!",
+    "image": null
   },
   {
     "name": "Frank",
-    "message": "Another year older, wiser, and even more amazing! Happy Birthday!"
+    "message": "Another year older, wiser, and even more amazing! Happy Birthday!",
+    "image": null
   },
   {
     "name": "Grace",
-    "message": "Cheers to another year of adventure and happiness!"
+    "message": "Cheers to another year of adventure and happiness!",
+    "image": null
   },
   {
     "name": "Henry",
-    "message": "Wishing you laughter, fun, and cake!"
+    "message": "Wishing you laughter, fun, and cake!",
+    "image": null
   }
 ]
