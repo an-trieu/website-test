@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Linda!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            background-color: #fce4ec;
+            margin: 0;
+            padding-top: 20px;
+        }
+        .background {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 60%;
+            max-width: 70vw;
+            text-align: center;
+            margin: 50px auto;
+        }
+        h1 {
+            color: #d81b60;
+            margin-bottom: 20px;
+        }
+        .message-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 23%;
+            min-height: 10px;
+        }
+        .message {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid black;
+            border-radius: 8px;
+            padding: 5px;
+            padding-bottom: 8px;
+            padding-left: 8px;
+            padding-right: 8px;
+            background-color: #fff;
+            resize: none;
+            overflow: hidden;
+            box-sizing: border-box;
+            height: auto;
+
+        }
+        .name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #d81b60;
+            text-align: left;
+        }
+        .add-message {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function autoResize(textarea) {
+            textarea.style.height = "auto";
+            textarea.style.height = textarea.scrollHeight + "px";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadMessages();
+            document.querySelectorAll(".message").forEach(textarea => {
+                autoResize(textarea);
+            });
+        });
+
+        function toggleMessageInput() {
+            const nameInput = document.getElementById("nameInput");
+            const messageInput = document.getElementById("messageInput");
+            const addButton = document.getElementById("addMessageButton");
+            const toggleButton = document.getElementById("toggleButton");
+
+            if (nameInput.style.display === "none") {
+                nameInput.style.display = "block";
+                messageInput.style.display = "block";
+                addButton.style.display = "block";
+                toggleButton.textContent = "Close Message";
+            } else {
+                nameInput.style.display = "none";
+                messageInput.style.display = "none";
+                addButton.style.display = "none";
+                toggleButton.textContent = "Write a Message";
+            }
+        }
+
+        async function addMessage() {
+            const nameField = document.getElementById("nameInput");
+            const inputField = document.getElementById("messageInput");
+            const nameText = nameField.value.trim();
+            const messageText = inputField.value.trim();
+
+            if (messageText === "" || nameText === "") return;
+
+            const columns = document.querySelectorAll(".column");
+            let minHeightColumn = columns[0];
+            let minHeight = getColumnHeight(minHeightColumn);
+
+            columns.forEach(column => {
+                const currentHeight = getColumnHeight(column);
+                if (currentHeight < minHeight) {
+                    minHeight = currentHeight;
+                    minHeightColumn = column;
+                }
+            });
+
+            const newMessageContainer = document.createElement("div");
+
+            const nameElement = document.createElement("span");
+            nameElement.classList.add("name");
+            nameElement.textContent = `- ${nameText}`;
+
+            const newMessage = document.createElement("textarea");
+            newMessage.classList.add("message");
+            newMessage.setAttribute("oninput", "autoResize(this)");
+            newMessage.readOnly = true;
+            newMessage.value = messageText;
+
+            newMessageContainer.appendChild(nameElement);
+            newMessageContainer.appendChild(newMessage);
+
+            minHeightColumn.appendChild(newMessageContainer);
+            autoResize(newMessage);
+
+            inputField.value = "";
+            nameField.value = "";
+            toggleMessageInput();
+
+            await saveMessage(nameText, messageText);
+        }
+
+        function getColumnHeight(column) {
+            let height = 0;
+            column.querySelectorAll('.message').forEach(message => {
+                height += message.offsetHeight + 10;
+            });
+            return height;
+        }
+
+        async function saveMessage(name, message) {
+            try {
+                const response = await fetch('messages.json');
+                let messages = [];
+                if (response.ok) {
+                    messages = await response.json();
+                }
+                messages.push({ name: name, message: message });
+                await fetch('messages.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messages),
+                });
+                loadMessages();
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
+        }
+
+        async function loadMessages() {
+            try {
+                const response = await fetch('messages.json');
+                let messages = [];
+                if (response.ok) {
+                    messages = await response.json();
+                }
+
+                const columns = document.querySelectorAll('.column');
+                columns.forEach(column => {
+                    const dynamicMessages = column.querySelectorAll('div:not(:first-child)');
+                    dynamicMessages.forEach(msg => msg.remove());
+                });
+
+                messages.forEach(msg => {
+                    const newMessageContainer = document.createElement('div');
+                    const nameElement = document.createElement('span');
+                    nameElement.classList.add('name');
+                    nameElement.textContent = `- ${msg.name}`;
+                    const newMessage = document.createElement('textarea');
+                    newMessage.classList.add('message');
+                    newMessage.setAttribute('oninput', 'autoResize(this)');
+                    newMessage.readOnly = true;
+                    newMessage.value = msg.message;
+                    newMessageContainer.appendChild(nameElement);
+                    newMessageContainer.appendChild(newMessage);
+
+                    let minHeight = Infinity;
+                    let minHeightColumn = columns[0];
+
+                    columns.forEach(col => {
+                        const height = getColumnHeight(col);
+                        if (height < minHeight) {
+                            minHeight = height;
+                            minHeightColumn = col;
+                        }
+                    });
+
+                    minHeightColumn.appendChild(newMessageContainer);
+                    autoResize(newMessage);
+                });
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="background">
+        <h1>Happy Birthday Linda!</h1>
+        
+            </div>
+        </div>
+        <div class="add-message">
+            <button id="toggleButton" onclick="toggleMessageInput()">Write a Message</button>
+            <input id="nameInput" type="text" style="display: none; width: 100%; margin-top: 10px;" placeholder="Your Name">
+            <textarea id="messageInput" style="display: none; width: 100%; margin-top: 10px;" placeholder="Type your message here..."></textarea>
+            <button id="addMessageButton" style="display: none; margin-top: 10px;" onclick="addMessage()">Add</button>
+        </div>
+    </div>
+</body>
+</html>
