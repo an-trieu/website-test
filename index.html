@@ -65,6 +65,16 @@
             color: #d81b60;
             text-align: left;
         }
+        .image-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
     </style>
     <script>
         function autoResize(textarea) {
@@ -94,16 +104,26 @@
                 const nameElement = document.createElement('span');
                 nameElement.classList.add('name');
                 nameElement.textContent = `- ${msg.name}`;
-                
+
+                newMessageContainer.appendChild(nameElement);
+
+                if (msg.image) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.classList.add('image-container');
+                    const image = document.createElement('img');
+                    image.src = msg.image;
+                    imageContainer.appendChild(image);
+                    newMessageContainer.appendChild(imageContainer);
+                }
+
                 const newMessage = document.createElement('textarea');
                 newMessage.classList.add('message');
                 newMessage.setAttribute('oninput', 'autoResize(this)');
                 newMessage.readOnly = true;
                 newMessage.value = msg.message;
-                
-                newMessageContainer.appendChild(nameElement);
+
                 newMessageContainer.appendChild(newMessage);
-                
+
                 let minHeightColumn = columns[0];
                 let minHeight = Infinity;
                 columns.forEach(col => {
@@ -123,6 +143,9 @@
             let height = 0;
             column.querySelectorAll('.message').forEach(message => {
                 height += message.offsetHeight + 10;
+            });
+            column.querySelectorAll('.image-container').forEach(image => {
+                height += image.offsetHeight + 10;
             });
             return height;
         }
