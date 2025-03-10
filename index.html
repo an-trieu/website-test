@@ -85,7 +85,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            loadMessages();
             document.querySelectorAll(".message").forEach(textarea => {
                 autoResize(textarea);
             });
@@ -110,7 +109,7 @@
             }
         }
 
-        async function addMessage() {
+        function addMessage() {
             const nameField = document.getElementById("nameInput");
             const inputField = document.getElementById("messageInput");
             const nameText = nameField.value.trim();
@@ -151,8 +150,6 @@
             inputField.value = "";
             nameField.value = "";
             toggleMessageInput();
-
-            await saveMessage(nameText, messageText);
         }
 
         function getColumnHeight(column) {
@@ -161,71 +158,6 @@
                 height += message.offsetHeight + 10;
             });
             return height;
-        }
-
-        async function saveMessage(name, message) {
-            try {
-                const response = await fetch('messages.json');
-                let messages = [];
-                if (response.ok) {
-                    messages = await response.json();
-                }
-                messages.push({ name: name, message: message });
-                await fetch('messages.json', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(messages),
-                });
-                loadMessages();
-            } catch (error) {
-                console.error('Error saving message:', error);
-            }
-        }
-
-        async function loadMessages() {
-            try {
-                const response = await fetch('messages.json');
-                let messages = [];
-                if (response.ok) {
-                    messages = await response.json();
-                }
-                const columns = document.querySelectorAll('.column');
-                columns.forEach(column => {
-                    column.innerHTML = ''; //Clear all messages
-                });
-
-                messages.forEach(msg => {
-                    const newMessageContainer = document.createElement('div');
-                    const nameElement = document.createElement('span');
-                    nameElement.classList.add('name');
-                    nameElement.textContent = `- ${msg.name}`;
-                    const newMessage = document.createElement('textarea');
-                    newMessage.classList.add('message');
-                    newMessage.setAttribute('oninput', 'autoResize(this)');
-                    newMessage.readOnly = true;
-                    newMessage.value = msg.message;
-                    newMessageContainer.appendChild(nameElement);
-                    newMessageContainer.appendChild(newMessage);
-
-                    let minHeight = Infinity;
-                    let minHeightColumn = columns[0];
-
-                    columns.forEach(col => {
-                        const height = getColumnHeight(col);
-                        if (height < minHeight) {
-                            minHeight = height;
-                            minHeightColumn = col;
-                        }
-                    });
-
-                    minHeightColumn.appendChild(newMessageContainer);
-                    autoResize(newMessage);
-                });
-            } catch (error) {
-                console.error('Error loading messages:', error);
-            }
         }
     </script>
 </head>
