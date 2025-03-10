@@ -44,11 +44,13 @@
             min-height: 10px;
         }
         .message-container {
-            border: 1px solid #ddd;
+            border: 1px solid #bbbbbb;
             border-radius: 8px;
             padding: 10px;
             margin-bottom: 10px;
             background-color: #fff;
+            display: flex;
+            flex-direction: column;
         }
         .message {
             width: 100%;
@@ -77,6 +79,12 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+        }
+        .message-content {
+            order: 2;
+        }
+        .image-container {
+            order: 1;
         }
     </style>
     <script>
@@ -109,6 +117,11 @@
                 const nameElement = document.createElement('span');
                 nameElement.classList.add('name');
                 nameElement.textContent = `- ${msg.name}`;
+
+                if (msg.color) { // Apply color if it exists
+                    nameElement.style.color = msg.color;
+                }
+
                 messageContainer.appendChild(nameElement);
 
                 if (msg.image) {
@@ -122,6 +135,7 @@
 
                 const newMessage = document.createElement('textarea');
                 newMessage.classList.add('message');
+                newMessage.classList.add('message-content');
                 newMessage.setAttribute('oninput', 'autoResize(this)');
                 newMessage.readOnly = true;
                 newMessage.value = msg.message;
