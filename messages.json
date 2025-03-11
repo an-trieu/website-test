@@ -67,5 +67,16 @@
     "name": "Emma5",
     "message": "May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!",
     "image": null
+  },
+  {
+    "name": "Grace2",
+    "message": "Cheers to another year of adventure and happiness!",
+    "image": null
+  },
+  {
+    "name": "Grace3",
+    "message": "Cheers to another year of adventure and happiness!Cheers to another year of adventure and happiness!",
+    "image": null
+    "color": "#ffffff"
   }
 ]
