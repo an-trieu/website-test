@@ -88,5 +88,77 @@
     "message": "Cheers to another year of adventure and happiness!Cheers to another year of adventure and happiness!",
     "image": null,
     "color": "#ffffff"
+  },
+  {
+    "name": "Dave",
+    "message": "Stay happy, stay blessed, and enjoy every moment!",
+    "image": "https://images.fineartamerica.com/images/artworkimages/medium/3/happy-peepo-maria-s-fredericks-transparent.png",
+    "color": "purple"
+  },
+  {
+    "name": "Emma",
+    "message": "May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Frank",
+    "message": "Another year older, wiser, and even more amazing! Happy Birthday!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Grace",
+    "message": "Cheers to another year of adventure and happiness!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Henry",
+    "message": "Wishing you laughter, fun, and cake!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Emma1",
+    "message": "May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Emma2",
+    "message": "May your birthday be as awesome as you are!May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Emma3",
+    "message": "May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Emma4",
+    "message": "May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Emma5",
+    "message": "May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!May your birthday be as awesome as you are!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Grace2",
+    "message": "Cheers to another year of adventure and happiness!",
+    "image": null,
+    "color": "blue"
+  },
+  {
+    "name": "Grace31",
+    "message": "Cheers to another year of adventure and happiness!Cheers to another year of adventure and happiness!",
+    "image": null,
+    "color": "#ffffff"
   }
 ]
