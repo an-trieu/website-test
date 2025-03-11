@@ -97,7 +97,8 @@
 
         async function loadMessages() {
             try {
-                const response = await fetch("https://an-trieu.github.io/website-test/messages.json");
+                const url = "https://an-trieu.github.io/website-test/messages.json?v=" + new Date().getTime();
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error("Failed to load messages.");
                 }
