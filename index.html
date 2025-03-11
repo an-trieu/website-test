@@ -34,7 +34,6 @@
         }
         .message-box {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
             justify-content: space-between;
         }
@@ -42,27 +41,32 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            width: 23%;
-            min-height: 10px;
-            overflow-y: auto;
+            width: 100%;
         }
         .message-container {
             border: 1px solid #bbbbbb;
             border-radius: 8px;
             padding: 10px;
-            margin-bottom: 10px;
             background-color: #fff;
             display: flex;
             flex-direction: column;
         }
+        .message-container textarea {
+            width: 100%;
+            min-height: 40px;
+            border: none;
+            resize: none;
+            overflow: hidden;
+            background-color: transparent;
+            padding: 0;
+            outline: none; /* Add this line */
+        }    
         .message {
             width: 100%;
             min-height: 40px;
             border: none;
             resize: none;
             overflow: hidden;
-            box-sizing: border-box;
-            height: auto;
             background-color: transparent;
             padding: 0;
         }
@@ -82,15 +86,12 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-        }
-        .message-content {
-            order: 2;
-        }
-        .image-container {
-            order: 1;
+            display: block;
         }
     </style>
     <script>
+        const COLUMN_COUNT = 5; // Change this to any number etc.
+
         function autoResize(textarea) {
             textarea.style.height = "auto";
             textarea.style.height = textarea.scrollHeight + "px";
@@ -111,8 +112,18 @@
         }
 
         function displayMessages(messages) {
-            const columns = document.querySelectorAll('.column');
-            columns.forEach(column => column.innerHTML = '');
+            const messageBox = document.querySelector('.message-box');
+            messageBox.innerHTML = ""; // Clear existing columns
+
+            let columns = Array.from({ length: COLUMN_COUNT }, () => {
+                const col = document.createElement("div");
+                col.classList.add("column");
+                messageBox.appendChild(col);
+                return col;
+            });
+
+            let columnHeights = new Array(COLUMN_COUNT).fill(0); // Track height of each column
+            let messageContainers = []; // Store all messages to wait for image load
 
             messages.forEach(msg => {
                 const messageContainer = document.createElement('div');
@@ -121,12 +132,12 @@
                 const nameElement = document.createElement('span');
                 nameElement.classList.add('name');
                 nameElement.textContent = `- ${msg.name}`;
-
-                if (msg.color) { // Apply color if it exists
+                if (msg.color) {
                     nameElement.style.color = msg.color;
                 }
-
                 messageContainer.appendChild(nameElement);
+
+                let imageLoaded = Promise.resolve(); // Default no image
 
                 if (msg.image) {
                     const imageContainer = document.createElement('div');
@@ -135,53 +146,44 @@
                     image.src = msg.image;
                     imageContainer.appendChild(image);
                     messageContainer.appendChild(imageContainer);
+
+                    // Wait for image to load before processing
+                    imageLoaded = new Promise((resolve) => {
+                        image.onload = resolve;
+                    });
                 }
 
                 const newMessage = document.createElement('textarea');
                 newMessage.classList.add('message');
-                newMessage.classList.add('message-content');
-                newMessage.setAttribute('oninput', 'autoResize(this)');
                 newMessage.readOnly = true;
                 newMessage.value = msg.message;
+                newMessage.setAttribute('oninput', 'autoResize(this)');
                 messageContainer.appendChild(newMessage);
 
-                let minHeightColumn = columns[0];
-                let minHeight = Infinity;
-                columns.forEach(col => {
-                    const height = getColumnHeight(col);
-                    if (height < minHeight) {
-                        minHeight = height;
-                        minHeightColumn = col;
-                    }
+                messageContainers.push({ container: messageContainer, imageLoaded });
+            });
+
+            // Ensure all images are loaded before arranging messages
+            Promise.all(messageContainers.map(m => m.imageLoaded)).then(() => {
+                messageContainers.forEach(({ container }) => {
+                    autoResize(container.querySelector('.message')); // Resize text area
+
+                    let minColumnIndex = columnHeights.indexOf(Math.min(...columnHeights)); // Find shortest column
+                    columns[minColumnIndex].appendChild(container); // Add to column first
+
+                    let messageHeight = container.offsetHeight; // Measure after adding to column
+                    columnHeights[minColumnIndex] += messageHeight; // Update column height
                 });
-
-                minHeightColumn.appendChild(messageContainer);
-                autoResize(newMessage);
             });
         }
 
-        function getColumnHeight(column) {
-            let height = 0;
-            column.querySelectorAll('.message-container').forEach(container => {
-                height += container.offsetHeight + 10;
-            });
-            return height;
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            loadMessages();
-        });
+        document.addEventListener("DOMContentLoaded", loadMessages);
     </script>
 </head>
 <body>
     <div class="background">
         <h1>Happy Birthday Linda!</h1>
-        <div class="message-box">
-            <div class="column"></div>
-            <div class="column"></div>
-            <div class="column"></div>
-            <div class="column"></div>
-        </div>
+        <div class="message-box"></div>
     </div>
 </body>
 </html>
